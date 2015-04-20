@@ -1,0 +1,5 @@
+*.pyc
+.env
+.git
+fabfile.py
+rsync_exclude.txt
