@@ -1,0 +1,85 @@
+zabbix:
+  server: 192.168.120.90
+  dbaddr: localhost
+  dbname: zabbix
+  dbuser: zabbix
+  dbpassword: 1TexcgZuoReK7U
+  dbrootuser: root
+  dbrootpassword: 1TexcgZuoReK7U
+  web_api: 'http://127.0.0.1/zabbix'
+  web_user: admin
+  web_pass: zabbix
+  dbmonitoruser: root
+  dbmonitorpassword: 1TexcgZuoReK7U
+
+zabbix_user:
+  usergroups:
+    Renrun Usergroup:
+      status: 0
+    Guest:
+      status: 1
+    Guests:
+      status: 1
+  users:
+    Ting Zhou:
+      lastname: Ting
+      firstname: Zhou
+      passwd: 1TexcgZuoReK7U
+      usergroups:
+        - Renrun Usergroup
+      sendto: zt@renrunkeji.com
+  triggers:
+    OS Passwd has been changed:
+      expression: '\{Template OS Linux:vfs.file.cksum[/etc/passwd].diff(0)\}>0'
+      priority: 4
+    OS Max number of opened files is too low:
+      expression: '\{Template OS Linux:kernel.maxfiles.last(0)\}<10240'
+      priority: 4
+    OS Max number of processes is too low:
+      expression: '\{Template OS Linux:kernel.maxproc.last(0)\}<10240'
+      priority: 4
+    OS Disk I/O is overloaded:
+      expression: '\{Template OS Linux:system.cpu.util[,iowait].last(0)\}>20'
+      priority: 4
+    OS Memory low:
+      expression: '\{Template OS Linux:vm.memory.size[available].last(0)\}<20M'
+      priority: 4
+    OS Swap low:
+      expression: '\{Template OS Linux:system.swap.size[,pfree].last(0)\}<50'
+      priority: 4
+    OS Process load too high:
+      expression: '\{Template OS Linux:system.cpu.load[percpu,avg1].last(0)\}>2'
+      priority: 4
+    OS Process number too high:
+      expression: '\{Template OS Linux:proc.num[].last(0)\}>1000'
+      priority: 4
+    OS Running Process number too high:
+      expression: '\{Template OS Linux:proc.num[,,run].last(0)\}>50'
+      priority: 4
+    OS Server has been reboot:
+      expression: '\{Template OS Linux:system.uptime.change(0)\}<0'
+      priority: 4
+  actions:
+    OS action:
+      trigger_filter: OS
+      notify_usergroup: Renrun Usergroup
+
+zabbix_host:
+  hostgoups:
+    - All servers
+  hosts:
+    misc:
+      hostgroups:
+        - All servers
+      templates:
+        - Template OS Linux
+        - Socket
+        - Mysql
+      interface: 192.168.120.90
+    test:
+      hostgroups:
+        - All servers
+      templates:
+        - Template OS Linux
+        - Socket
+      interface: 192.168.120.10
